@@ -3,7 +3,7 @@
     <div class="app-title"></div>
     <div class="flex">
       <div class="todolist big">
-        <div class="ttl">Todo Listgg</div>
+        <div class="ttl">Todo List</div>
 
         <div>
           <div class="input_text">
@@ -220,6 +220,7 @@ input {
   background: rgb(180, 240, 255);
   user-select: none;
 }
+
 .ttl {
   font-weight: 100000;
   font-size: 1.5rem;
@@ -309,5 +310,18 @@ input {
 .list {
   display: flex;
   flex-direction: column;
+}
+
+@media screen and (max-width: 860px) {
+  .flex {
+    flex-direction: column;
+  }
+  .todolist,
+  .completelist,
+  .deletelist {
+    width: 100%;
+    max-height: 40vh;
+    overflow-y: scroll;
+  }
 }
 </style>
