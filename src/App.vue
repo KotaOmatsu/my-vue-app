@@ -8,13 +8,20 @@
         <div>
           <div class="input_text">
             <input type="text" v-model="inputTodo" @keydown.enter="addTodo" />
-            <div v-on:click="addTodo" class="add_btn">➕</div>
+            <div v-on:click="addTodo" class="red_btn">add</div>
           </div>
         </div>
 
         <div>
-          <div v-for="(todo, index) in todos" v-bind:key="index" class="todo">
-            <!-- <div class="todo__checkbox">
+          <draggable
+            v-model="todos"
+            group="myGroup"
+            :options="options"
+            @start="drag = true"
+            @end="drag = false"
+          >
+            <div v-for="(todo, index) in todos" v-bind:key="index" class="todo">
+              <!-- <div class="todo__checkbox">
           <input type="checkbox" v-model="todo.isDone" />
         </div>
 
@@ -22,57 +29,84 @@
           {{ index }}:{{ todo.text }}
         </div>
         <div v-else class="todo__text">{{ index }}:{{ todo.text }}</div> -->
-            <div class="list">
-              <div>{{ index + 1 }}．{{ todo.text }}</div>
-            </div>
+              <div class="list">
+                <div>{{ index + 1 }}．{{ todo.text }}</div>
+              </div>
 
-            <div class="btns">
-              <div v-on:click="completeTodo(index)" class="btn">✅</div>
-              <div v-on:click="deleteTodo(index)" class="todo__delete">🗑</div>
+              <div class="btns">
+                <div v-on:click="completeTodo(index)" class="btn">✅</div>
+                <div v-on:click="deleteTodo(index)" class="todo__delete">🗑</div>
+              </div>
             </div>
-          </div>
+          </draggable>
         </div>
       </div>
 
       <div class="completelist big">
         <div class="ttl">Complete✅</div>
-        <div v-on:click="kanzenCompleteTodo" class="all_delete_btn">clear</div>
-
-        <div
-          v-for="(completetodo, index) in completetodos"
-          v-bind:key="index"
-          class="todo"
+        <div v-on:click="kanzenCompleteTodo" class="red_btn">clear</div>
+        <draggable
+          v-model="completetodos"
+          group="myGroup"
+          :options="options"
+          @start="drag = true"
+          @end="drag = false"
         >
-          <div class="list">{{ completetodo.text }}</div>
-          <div v-on:click="fukugenTodoc(index)" class="btn">🔄</div>
-        </div>
+          <div
+            v-for="(completetodo, index) in completetodos"
+            v-bind:key="index"
+            class="todo"
+          >
+            <div class="list">{{ completetodo.text }}</div>
+            <div v-on:click="fukugenTodoc(index)" class="btn">🔄</div>
+          </div>
+        </draggable>
       </div>
 
       <div class="deletelist big">
         <div class="ttl">deleted🗑</div>
-        <div v-on:click="AllkanzendeleteTodo" class="all_delete_btn">clear</div>
-        <div
-          v-for="(deletetodo, index) in deletetodos"
-          v-bind:key="index"
-          class="todo"
+        <div v-on:click="AllkanzendeleteTodo" class="red_btn">clear</div>
+
+        <draggable
+          v-model="deletetodos"
+          group="myGroup"
+          :options="options"
+          @start="drag = true"
+          @end="drag = false"
         >
-          <div class="list">{{ deletetodo.text }}</div>
-          <div class="btns">
-            <div v-on:click="fukugenTodo(index)" class="btn">🔄</div>
-            <div v-on:click="kanzendeleteTodo(index)" class="todo__delete">
-              ❌
+          <div
+            v-for="(deletetodo, index) in deletetodos"
+            v-bind:key="index"
+            class="todo"
+          >
+            <div class="list">{{ deletetodo.text }}</div>
+            <div class="btns">
+              <div v-on:click="fukugenTodo(index)" class="btn">🔄</div>
+              <div v-on:click="kanzendeleteTodo(index)" class="todo__delete">
+                ❌
+              </div>
             </div>
           </div>
-        </div>
+        </draggable>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import draggable from "vuedraggable"
+
 export default {
+  name: "dnd",
+
+  components: { draggable },
+
   data() {
     return {
+      options: {
+        group: "myGroup",
+        animation: 200,
+      },
       inputTodo: "",
       todos: [
         {
@@ -182,8 +216,9 @@ input {
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background: rgb(180, 240, 255);
+  user-select: none;
 }
 .ttl {
   font-weight: 100000;
@@ -204,7 +239,9 @@ input {
   box-shadow: 5px 5px 2px rgb(105, 105, 105);
   margin: 0.5rem 0;
 }
-
+.todo:nth-child(2n) {
+  background: #e7e7e7;
+}
 .todo:hover {
   /* color: white; */
   background-color: #dee8fd;
@@ -216,7 +253,7 @@ input {
   margin: 1rem;
 }
 .todolist {
-  padding: 1rem 1rem 1rem 2rem;
+  padding: 1.4rem;
   display: flex;
   flex-direction: column;
   width: 30%;
@@ -224,12 +261,12 @@ input {
 }
 
 .completelist {
-  padding: 1rem;
+  padding: 1.4rem;
   width: 30%;
   /* min-width: 300px; */
 }
 .deletelist {
-  padding: 1rem;
+  padding: 1.4rem;
   width: 30%;
   /* min-width: 300px; */
 }
@@ -257,7 +294,7 @@ input {
 .btn:hover {
   text-shadow: 0 0 5px #fff;
 }
-.all_delete_btn {
+.red_btn {
   cursor: pointer;
   font-weight: bold;
   color: #fff;
