@@ -316,6 +316,12 @@ input {
   .flex {
     flex-direction: column;
   }
+  .todo {
+    padding: 1rem 0.2rem;
+  }
+  .big {
+    margin: 0.8rem 0.1rem;
+  }
   .todolist,
   .completelist,
   .deletelist {
