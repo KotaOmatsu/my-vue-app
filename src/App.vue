@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <div class="app-title"></div>
+  <div class="body">
     <div class="flex">
       <div class="todolist big">
-        <div class="ttl">Todo List</div>
+        <div class="ttl">Todo List ({{ todos.length }})</div>
 
         <div>
           <div class="input_text">
@@ -21,14 +20,6 @@
             @end="drag = false"
           >
             <div v-for="(todo, index) in todos" v-bind:key="index" class="todo">
-              <!-- <div class="todo__checkbox">
-          <input type="checkbox" v-model="todo.isDone" />
-        </div>
-
-        <div v-if="todo.isDone" class="todo__text todo__text--done">
-          {{ index }}:{{ todo.text }}
-        </div>
-        <div v-else class="todo__text">{{ index }}:{{ todo.text }}</div> -->
               <div class="list">
                 <div>{{ index + 1 }}．{{ todo.text }}</div>
               </div>
@@ -111,27 +102,22 @@ export default {
       todos: [
         {
           text: "example1",
-          isDone: false,
         },
         {
           text: "example2",
-          isDone: false,
         },
         {
           text: "example3",
-          isDone: false,
         },
       ],
       completetodos: [
         {
           text: "example4",
-          isDone: true,
         },
       ],
       deletetodos: [
         {
           text: "example5",
-          isDone: true,
         },
       ],
     }
@@ -140,41 +126,45 @@ export default {
     addTodo(event) {
       if (event.keyCode !== 13) {
         if (this.inputTodo !== "") {
-          const todo = { text: this.inputTodo, isDone: false }
+          const todo = { text: this.inputTodo }
           this.todos.unshift(todo)
           this.inputTodo = ""
         }
       }
       if (this.inputTodo !== "") {
-        const todo = { text: this.inputTodo, isDone: false }
+        const todo = { text: this.inputTodo }
         this.todos.unshift(todo)
         this.inputTodo = ""
       }
     },
     completeTodo(index) {
-      const completetodo = { text: this.todos[index].text, isDone: true }
+      const completetodo = { text: this.todos[index].text }
       this.completetodos.unshift(completetodo)
       this.todos.splice(index, 1)
       window.setInterval(this.kanzenCompleteTodo, 3600000)
     },
     kanzenCompleteTodo(index) {
-      const result = window.confirm("全ての項目を完全に削除しますか？")
-      if (result) {
-        this.completetodos.splice(index, this.completetodos.length)
+      if (this.completetodos.length !== 0) {
+        const result = window.confirm("全ての項目を完全に削除しますか？")
+        if (result) {
+          this.completetodos.splice(index, this.completetodos.length)
+        }
+      } else {
+        window.alert("項目がありません。")
       }
     },
     deleteTodo(index) {
-      const deletetodo = { text: this.todos[index].text, isDone: true }
+      const deletetodo = { text: this.todos[index].text }
       this.deletetodos.unshift(deletetodo)
       this.todos.splice(index, 1)
     },
     fukugenTodo(index) {
-      const todo = { text: this.deletetodos[index].text, isDone: false }
+      const todo = { text: this.deletetodos[index].text }
       this.todos.unshift(todo)
       this.deletetodos.splice(index, 1)
     },
     fukugenTodoc(index) {
-      const todo = { text: this.completetodos[index].text, isDone: false }
+      const todo = { text: this.completetodos[index].text }
       this.todos.unshift(todo)
       this.completetodos.splice(index, 1)
     },
@@ -185,9 +175,13 @@ export default {
       }
     },
     AllkanzendeleteTodo(index) {
-      const result = window.confirm("全ての項目を完全に削除しますか？")
-      if (result) {
-        this.deletetodos.splice(index, this.deletetodos.length)
+      if (this.deletetodos.length !== 0) {
+        const result = window.confirm("全ての項目を完全に削除しますか？")
+        if (result) {
+          this.deletetodos.splice(index, this.deletetodos.length)
+        }
+      } else {
+        window.alert("項目がありません。")
       }
     },
   },
@@ -196,6 +190,10 @@ export default {
 
 <style scoped>
 @import url("https://unpkg.com/ress/dist/ress.min.css");
+
+.body {
+  background: rgb(180, 240, 255);
+}
 
 .input_text {
   display: flex;
@@ -217,7 +215,6 @@ input {
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  background: rgb(180, 240, 255);
   user-select: none;
 }
 
@@ -306,6 +303,11 @@ input {
   padding: 2px;
   margin: 5px;
   font-weight: 100000;
+}
+.red_btn:active {
+  box-shadow: none;
+  position: relative;
+  top: 3px;
 }
 .list {
   display: flex;
