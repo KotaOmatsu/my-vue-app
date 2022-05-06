@@ -97,5 +97,6 @@ export default {
   margin-left: 2rem;
   background-color: #b2ae3b;
   border-radius: 5px;
+  color: #b23b61;
 }
 </style>
